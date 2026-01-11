@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id_role   Int      @id @default(autoincrement())
+  nama_role String   @db.VarChar(50)
+  users     User[]
+
+  @@map("roles")
+}
+
+model User {
+  id_user    Int           @id @default(autoincrement())
+  nama       String        @db.VarChar(100)
+  username   String        @unique @db.VarChar(50)
+  password   String        @db.VarChar(255)
+  id_role    Int
+  status     String        @default("aktif") @db.VarChar(10)
+  created_at DateTime      @default(now())
+  
+  role       Role          @relation(fields: [id_role], references: [id_role])
+  peminjaman Peminjaman[]
+  logs       LogAktivitas[]
+
+  @@map("users")
+}
+
+model Kategori {
+  id_kategori   Int     @id @default(autoincrement())
+  nama_kategori String  @db.VarChar(100)
+  alats         Alat[]
+
+  @@map("kategori")
+}
+
+model Alat {
+  id_alat     Int          @id @default(autoincrement())
+  nama_alat   String       @db.VarChar(100)
+  id_kategori Int
+  stok        Int
+  kondisi     String       @default("baik") @db.VarChar(10)
+  
+  kategori    Kategori     @relation(fields: [id_kategori], references: [id_kategori])
+  peminjaman  Peminjaman[]
+
+  @@map("alat")
+}
+
+model Peminjaman {
+  id_pinjam       Int            @id @default(autoincrement())
+  id_user         Int
+  id_alat         Int
+  tanggal_pinjam  DateTime       @db.Date
+  tanggal_kembali DateTime       @db.Date
+  status          String         @default("pengajuan") @db.VarChar(20)
+  
+  user            User           @relation(fields: [id_user], references: [id_user])
+  alat            Alat           @relation(fields: [id_alat], references: [id_alat])
+  pengembalian    Pengembalian[]
+
+  @@map("peminjaman")
+}
+
+model Pengembalian {
+  id_kembali           Int        @id @default(autoincrement())
+  id_pinjam            Int
+  tanggal_dikembalikan DateTime   @db.Date
+  denda                Int        @default(0)
+  
+  peminjaman           Peminjaman @relation(fields: [id_pinjam], references: [id_pinjam])
+
+  @@map("pengembalian")
+}
+
+model LogAktivitas {
+  id_log    Int      @id @default(autoincrement())
+  id_user   Int?
+  aktivitas String   @db.Text
+  waktu     DateTime @default(now())
+  
+  user      User?    @relation(fields: [id_user], references: [id_user])
+
+  @@map("log_aktivitas")
+}
