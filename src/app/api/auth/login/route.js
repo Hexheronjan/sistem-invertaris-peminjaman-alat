@@ -22,26 +22,17 @@ export async function POST(request) {
 
         if (!user) {
             return NextResponse.json(
-                { message: 'User tidak ditemukan' },
+                { message: 'User tidak ditemukan' }, // Sesuai permintaan Poin 1
                 { status: 401 }
             );
         }
 
         // Cek password
-        // Note: Jika di database masih plain text (data dummy awal), 
-        // kita mungkin perlu handling khusus. Tapi idealnya di-hash.
-        // Di sini kita asumsikan sudah di-hash, atau jika gagal compare,
-        // kita cek equality biasa (fallback untuk development dengan data dummy)
-        let isPasswordValid = await comparePassword(password, user.password);
-
-        // Fallback: Jika database masih plain text (TIDAK AMAN, CUMA UTK DEV/MIGRASI AWAL)
-        if (!isPasswordValid && password === user.password) {
-            isPasswordValid = true;
-        }
+        const isPasswordValid = await comparePassword(password, user.password);
 
         if (!isPasswordValid) {
             return NextResponse.json(
-                { message: 'Password salah' },
+                { message: 'Password salah' }, // Sesuai permintaan: Spesifik
                 { status: 401 }
             );
         }

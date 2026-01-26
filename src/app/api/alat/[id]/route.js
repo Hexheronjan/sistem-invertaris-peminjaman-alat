@@ -1,20 +1,35 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
-export async function PUT(request, { params }) {
-    try {
-        const { id: idParam } = await params;
-        const id = parseInt(idParam);
-        const body = await request.json();
+export async function PUT(request, props) {
+    // Next.js 15: props.params is a Promise
+    const params = await props.params;
 
-        // Validasi
-        // id_kategori harus int, stok harus int
+    try {
+        const id = parseInt(params.id);
+
+        console.log(`[API PUT] Updating alat ID: ${id}`);
+        const body = await request.json();
+        console.log(`[API PUT] Body:`, body);
+
+        // Safe Parsing
+        const id_kategori = parseInt(body.id_kategori);
+        const stok = parseInt(body.stok);
+
+        if (isNaN(id) || isNaN(id_kategori) || isNaN(stok)) {
+            console.error("[API PUT] Validation Failed: NaN detected");
+            return NextResponse.json({ message: 'Data tidak valid (ID/Stok/Kategori harus angka)' }, { status: 400 });
+        }
+
         const updateData = {
+            kode_alat: body.kode_alat || null,
             nama_alat: body.nama_alat,
-            id_kategori: parseInt(body.id_kategori),
-            stok: parseInt(body.stok),
+            stok: stok,
             kondisi: body.kondisi,
-            deskripsi: body.deskripsi
+            foto: body.foto || null,
+            kategori: {
+                connect: { id_kategori: id_kategori }
+            }
         };
 
         const updatedAlat = await prisma.alat.update({
@@ -22,15 +37,10 @@ export async function PUT(request, { params }) {
             data: updateData
         });
 
-        // Log
-        const { logActivity } = await import('@/lib/logger');
-        // Note: we need context user ID here. For now we assume this is called by admin/petugas.
-        // In real app, we get user from headers set by middleware.
-        // const userId = request.headers.get('x-user-id');
-        // if(userId) logActivity(userId, `Mengubah alat: ${updatedAlat.nama_alat}`);
-
+        console.log("[API PUT] Success");
         return NextResponse.json({ message: 'Alat berhasil diupdate', data: updatedAlat });
     } catch (error) {
+        console.error("[API PUT] Error:", error);
         return NextResponse.json({ message: 'Gagal update alat', error: error.message }, { status: 500 });
     }
 }

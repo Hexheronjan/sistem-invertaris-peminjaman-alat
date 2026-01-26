@@ -23,13 +23,14 @@ async function main() {
   `);
 
     // 2. Trigger Kurangi Stok
+    // FIX: Gunakan NEW.jumlah bukan hardcoded 1 untuk menangani jumlah peminjaman > 1
     await prisma.$executeRawUnsafe(`
     CREATE OR REPLACE FUNCTION kurangi_stok_fungsi()
     RETURNS TRIGGER AS $$
     BEGIN
-        IF NEW.status = 'disetujui' THEN
+        IF NEW.status = 'disetujui' AND (OLD.status IS NULL OR OLD.status != 'disetujui') THEN
             UPDATE alat
-            SET stok = stok - 1
+            SET stok = stok - NEW.jumlah
             WHERE id_alat = NEW.id_alat;
         END IF;
         RETURN NEW;
@@ -49,12 +50,16 @@ async function main() {
     }
 
     // 3. Trigger Tambah Stok
+    // FIX: Gunakan jumlah dari peminjaman bukan hardcoded 1 untuk menangani jumlah > 1
     await prisma.$executeRawUnsafe(`
     CREATE OR REPLACE FUNCTION tambah_stok_fungsi()
     RETURNS TRIGGER AS $$
+    DECLARE
+        jumlah_pinjaman INT;
     BEGIN
+        SELECT jumlah INTO jumlah_pinjaman FROM peminjaman WHERE id_pinjam = NEW.id_pinjam;
         UPDATE alat
-        SET stok = stok + 1
+        SET stok = stok + COALESCE(jumlah_pinjaman, 1)
         WHERE id_alat = (
             SELECT id_alat FROM peminjaman WHERE id_pinjam = NEW.id_pinjam
         );

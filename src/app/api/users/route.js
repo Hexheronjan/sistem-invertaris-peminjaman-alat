@@ -4,17 +4,34 @@ import { hashPassword } from '@/lib/auth';
 
 export async function GET(request) {
     try {
-        // Di sini seharusnya ada pengecekan Auth/Role (via Middleware atau header check)
-        // Untuk simplifikasi backend logic, kita return data dulu.
+        const { searchParams } = new URL(request.url);
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '10');
+        const search = searchParams.get('search') || '';
+        const skip = (page - 1) * limit;
 
-        const users = await prisma.user.findMany({
-            include: {
-                role: true
-            },
-            orderBy: {
-                id_user: 'asc'
-            }
-        });
+        const whereClause = {};
+        if (search) {
+            whereClause.OR = [
+                { nama: { contains: search, mode: 'insensitive' } },
+                { username: { contains: search, mode: 'insensitive' } }
+            ];
+        }
+
+        const [users, total] = await Promise.all([
+            prisma.user.findMany({
+                where: whereClause,
+                skip,
+                take: limit,
+                include: {
+                    role: true
+                },
+                orderBy: {
+                    id_user: 'asc'
+                }
+            }),
+            prisma.user.count({ where: whereClause })
+        ]);
 
         // Hapus password dari response
         const safeUsers = users.map(user => {
@@ -22,7 +39,15 @@ export async function GET(request) {
             return rest;
         });
 
-        return NextResponse.json(safeUsers, { status: 200 });
+        return NextResponse.json({
+            data: safeUsers,
+            pagination: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit)
+            }
+        });
     } catch (error) {
         return NextResponse.json({ message: 'Gagal mengambil data user', error: error.message }, { status: 500 });
     }

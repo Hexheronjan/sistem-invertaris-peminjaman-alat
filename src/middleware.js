@@ -43,8 +43,10 @@ export async function middleware(request) {
         // atau perketat jika perlu. Default: Login required (sudah tercover di atas).
         // Peminjam boleh POST (request), tapi tidak boleh PUT (approve)
         if (path.startsWith('/api/peminjaman') && request.method === 'PUT') {
-            if (payload.role !== 'admin' && payload.role !== 'petugas') {
-                return NextResponse.json({ message: 'Forbidden: Hanya Petugas yang boleh verifikasi' }, { status: 403 });
+            // FIX: Peminjam boleh akses PUT untuk mengubah status jadi 'menunggu_kembali'
+            // Kita izinkan semua role (auth required) masuk, validasi data ada di API endpoint.
+            if (payload.role !== 'admin' && payload.role !== 'petugas' && payload.role !== 'peminjam') {
+                return NextResponse.json({ message: 'Forbidden: Hanya Petugas/Peminjam yang valid' }, { status: 403 });
             }
         }
 
@@ -60,9 +62,46 @@ export async function middleware(request) {
         });
     }
 
+    // 3. Proteksi Halaman Frontend (Dashboard)
+    // Cek privilege berdasarkan Role
+    if (!path.startsWith('/api') && !path.startsWith('/_next') && !path.startsWith('/static')) {
+        // Proteksi /admin
+        if (path.startsWith('/admin')) {
+            if (!token) return NextResponse.redirect(new URL('/', request.url));
+            const payload = await verifyToken(token);
+            if (!payload || payload.role !== 'admin') {
+                return NextResponse.redirect(new URL('/404', request.url)); // Redirect ke 404 jika ilegal
+            }
+        }
+
+        // Proteksi /petugas
+        if (path.startsWith('/petugas')) {
+            if (!token) return NextResponse.redirect(new URL('/', request.url));
+            const payload = await verifyToken(token);
+            if (!payload || payload.role !== 'petugas') {
+                return NextResponse.redirect(new URL('/404', request.url));
+            }
+        }
+
+        // Proteksi /peminjam
+        if (path.startsWith('/peminjam')) {
+            if (!token) return NextResponse.redirect(new URL('/', request.url));
+            const payload = await verifyToken(token);
+            if (!payload || payload.role !== 'peminjam') {
+                return NextResponse.redirect(new URL('/404', request.url));
+            }
+        }
+    }
+
     return NextResponse.next();
 }
 
 export const config = {
-    matcher: '/api/:path*',
+    // Matcher: API routes + Frontend Dashboard routes
+    matcher: [
+        '/api/:path*',
+        '/admin/:path*',
+        '/petugas/:path*',
+        '/peminjam/:path*'
+    ],
 };

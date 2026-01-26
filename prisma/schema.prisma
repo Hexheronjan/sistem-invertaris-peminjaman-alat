@@ -41,10 +41,13 @@ model Kategori {
 
 model Alat {
   id_alat     Int          @id @default(autoincrement())
+  kode_alat   String?      @unique @db.VarChar(50)
   nama_alat   String       @db.VarChar(100)
   id_kategori Int
   stok        Int
+  stok_rusak  Int          @default(0)
   kondisi     String       @default("baik") @db.VarChar(10)
+  foto        String?      @db.VarChar(255)
   
   kategori    Kategori     @relation(fields: [id_kategori], references: [id_kategori])
   peminjaman  Peminjaman[]
@@ -58,6 +61,7 @@ model Peminjaman {
   id_alat         Int
   tanggal_pinjam  DateTime       @db.Date
   tanggal_kembali DateTime       @db.Date
+  jumlah          Int            @default(1)
   status          String         @default("pengajuan") @db.VarChar(20)
   
   user            User           @relation(fields: [id_user], references: [id_user])

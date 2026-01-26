@@ -15,6 +15,8 @@ export default function PengembalianPage() {
     // Return Form Modal
     const [selectedLoan, setSelectedLoan] = useState(null);
     const [returnDate, setReturnDate] = useState(new Date().toISOString().split('T')[0]);
+    const [condition, setCondition] = useState('baik'); // baik | rusak | hilang
+    const [description, setDescription] = useState('');
     const [isFormOpen, setIsFormOpen] = useState(false);
 
     const fetchActive = async () => {
@@ -33,6 +35,8 @@ export default function PengembalianPage() {
     const openReturnModal = (loan) => {
         setSelectedLoan(loan);
         setReturnDate(new Date().toISOString().split('T')[0]);
+        setCondition('baik');
+        setDescription('');
         setIsFormOpen(true);
     };
 
@@ -44,7 +48,9 @@ export default function PengembalianPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     id_pinjam: selectedLoan.id_pinjam,
-                    tanggal_dikembalikan: returnDate
+                    tanggal_dikembalikan: returnDate,
+                    kondisi_akhir: condition,
+                    deskripsi: description
                 })
             });
 
@@ -61,23 +67,23 @@ export default function PengembalianPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-200">
+        <div className="min-h-screen">
             <Sidebar role="admin" />
-            <main className="ml-64 p-8">
-                <h1 className="text-3xl font-bold text-white mb-6">Proses Pengembalian Alat</h1>
+            <main className="ml-64 p-8 animate-fade-in-up">
+                <h1 className="text-3xl font-bold text-slate-800 mb-6">Proses Pengembalian Alat</h1>
 
-                {loading ? <p className="animate-pulse">Loading...</p> : (
+                {loading ? <p className="animate-pulse text-slate-500">Loading...</p> : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {activeLoans.length === 0 && <p className="text-slate-500">Tidak ada peminjaman aktif/belum kembali.</p>}
 
                         {activeLoans.map(loan => (
-                            <div key={loan.id_pinjam} className="glass-card p-6 rounded-xl border border-blue-500/20 shadow-lg shadow-blue-500/5">
+                            <div key={loan.id_pinjam} className="glass-card p-6 rounded-xl shadow-lg border border-slate-200/50 hover:shadow-xl transition duration-300 group">
                                 <div className="flex justify-between items-start mb-4">
                                     <div>
-                                        <h3 className="font-bold text-white text-lg">{loan.user.nama}</h3>
-                                        <p className="text-sm text-slate-400">@{loan.user.username}</p>
+                                        <h3 className="font-bold text-slate-800 text-lg group-hover:text-blue-600 transition">{loan.user.nama}</h3>
+                                        <p className="text-sm text-slate-500">@{loan.user.username}</p>
                                     </div>
-                                    <span className="px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-bold rounded uppercase">
+                                    <span className="px-2 py-1 bg-emerald-100 text-emerald-600 text-xs font-bold rounded uppercase">
                                         Dipinjam
                                     </span>
                                 </div>
@@ -85,21 +91,21 @@ export default function PengembalianPage() {
                                 <div className="space-y-2 text-sm mb-6">
                                     <div className="flex justify-between">
                                         <span className="text-slate-500">Alat:</span>
-                                        <span className="text-white font-medium">{loan.alat.nama_alat}</span>
+                                        <span className="text-slate-800 font-medium">{loan.alat.nama_alat}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-slate-500">Tgl Pinjam:</span>
-                                        <span className="text-slate-300">{new Date(loan.tanggal_pinjam).toLocaleDateString()}</span>
+                                        <span className="text-slate-700">{new Date(loan.tanggal_pinjam).toLocaleDateString()}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-slate-500">Rencana Kembali:</span>
-                                        <span className="text-amber-300">{new Date(loan.tanggal_kembali).toLocaleDateString()}</span>
+                                        <span className="text-amber-600 font-medium">{new Date(loan.tanggal_kembali).toLocaleDateString()}</span>
                                     </div>
                                 </div>
 
                                 <button
                                     onClick={() => openReturnModal(loan)}
-                                    className="w-full py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-lg shadow-lg transition"
+                                    className="w-full py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-lg shadow-lg shadow-blue-500/20 transition transform group-hover:scale-[1.02]"
                                 >
                                     Proses Kembali
                                 </button>
@@ -115,20 +121,45 @@ export default function PengembalianPage() {
                     title="Konfirmasi Pengembalian"
                 >
                     <form onSubmit={handleReturn}>
-                        <p className="mb-4 text-slate-300">
+                        <p className="mb-4 text-slate-600">
                             Memproses pengembalian <strong>{selectedLoan?.alat?.nama_alat}</strong> dari <strong>{selectedLoan?.user?.nama}</strong>.
                         </p>
                         <div className="mb-6">
-                            <label className="block text-sm text-slate-400 mb-1">Tanggal Dikembalikan Real</label>
+                            <label className="block text-sm text-slate-500 font-medium mb-1">Tanggal Dikembalikan Real</label>
                             <input
                                 type="date"
-                                className="w-full px-4 py-2 bg-slate-800 border-slate-700 rounded-lg text-white"
+                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-slate-800"
                                 value={returnDate}
                                 onChange={e => setReturnDate(e.target.value)}
                                 required
                             />
                         </div>
-                        <button type="submit" className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold">
+                        <div className="mb-4">
+                            <label className="block text-sm text-slate-500 font-medium mb-1">Kondisi Barang</label>
+                            <select
+                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-slate-800"
+                                value={condition}
+                                onChange={e => setCondition(e.target.value)}
+                            >
+                                <option value="baik">Baik</option>
+                                <option value="rusak">Rusak (Perlu Perbaikan)</option>
+                                <option value="hilang">Hilang</option>
+                            </select>
+                        </div>
+                        {condition !== 'baik' && (
+                            <div className="mb-6 animate-fade-in-up">
+                                <label className="block text-sm text-slate-500 font-medium mb-1">Keterangan Kerusakan/Kehilangan</label>
+                                <textarea
+                                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-slate-800"
+                                    value={description}
+                                    onChange={e => setDescription(e.target.value)}
+                                    placeholder="Jelaskan kerusakan atau kronologi kehilangan..."
+                                    rows="3"
+                                    required
+                                />
+                            </div>
+                        )}
+                        <button type="submit" className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold shadow-lg shadow-emerald-500/20 transition">
                             Konfirmasi & Hitung Denda
                         </button>
                     </form>
@@ -142,26 +173,26 @@ export default function PengembalianPage() {
                 >
                     <div className="text-center py-4">
                         <div className="text-6xl mb-4">✅</div>
-                        <h3 className="text-2xl font-bold text-white mb-2">Alat Telah Dikembalikan</h3>
+                        <h3 className="text-2xl font-bold text-slate-800 mb-2">Alat Telah Dikembalikan</h3>
 
                         {result && result.denda > 0 ? (
-                            <div className="bg-red-500/20 border border-red-500/50 p-4 rounded-xl mt-4">
-                                <p className="text-red-300 text-sm uppercase font-bold">Keterlambatan</p>
-                                <p className="text-3xl font-bold text-red-500">{result.terlambat} Hari</p>
-                                <div className="h-px bg-red-500/30 my-2"></div>
-                                <p className="text-red-300 text-sm uppercase font-bold">Total Denda</p>
-                                <p className="text-4xl font-extrabold text-white">Rp {result.denda}</p>
+                            <div className="bg-red-50 border border-red-200 p-4 rounded-xl mt-4">
+                                <p className="text-red-500 text-sm uppercase font-bold">Keterlambatan</p>
+                                <p className="text-3xl font-bold text-red-600">{result.terlambat} Hari</p>
+                                <div className="h-px bg-red-200 my-2"></div>
+                                <p className="text-red-500 text-sm uppercase font-bold">Total Denda</p>
+                                <p className="text-4xl font-extrabold text-slate-800">Rp {result.denda}</p>
                             </div>
                         ) : (
-                            <div className="bg-emerald-500/20 border border-emerald-500/50 p-4 rounded-xl mt-4">
-                                <p className="text-emerald-400 font-bold text-lg">Tepat Waktu!</p>
-                                <p className="text-slate-300">Tidak ada denda.</p>
+                            <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-xl mt-4">
+                                <p className="text-emerald-600 font-bold text-lg">Tepat Waktu!</p>
+                                <p className="text-slate-500">Tidak ada denda.</p>
                             </div>
                         )}
 
                         <button
                             onClick={() => setIsResultOpen(false)}
-                            className="mt-6 px-6 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg"
+                            className="mt-6 px-6 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-lg transition"
                         >
                             Tutup
                         </button>

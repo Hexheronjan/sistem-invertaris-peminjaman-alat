@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -41,107 +42,166 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4 overflow-hidden relative">
-
-      {/* Background Ambience (Optional) */}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Floating Shapes Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-red-600/10 rounded-full blur-[120px] animate-pulse"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200/30 rounded-full blur-3xl animate-pulse-soft" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-200/30 rounded-full blur-3xl animate-pulse-soft delay-200" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-200/20 rounded-full blur-3xl animate-pulse-soft delay-100" />
       </div>
 
-      {/* ROTATING LINE BORDER CONTAINER */}
-      {/* We add 'p-[2px]' (padding 2px) to the outer container. The inner content will cover the center, leaving only 2px visible. */}
-      {/* Then we spin the background gradient behind it. */}
-      <div className="relative w-full max-w-4xl h-[600px] rounded-3xl z-10 overflow-hidden flex items-center justify-center bg-black/50">
+      <div className="w-full max-w-md relative z-10">
+        {/* Logo & Brand */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl mb-4 shadow-xl shadow-blue-500/30">
+            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+          </div>
+          <h1 className="text-3xl font-black text-slate-800 mb-2">Sistem Inventaris</h1>
+          <p className="text-slate-600">Manajemen aset yang efisien dan terpadu</p>
+        </div>
 
-        {/* THE SPINNING LINE */}
-        {/* We make this div HUGE and spin it. The overflow-hidden on parent cuts it off. */}
-        {/* Conic Gradient allows us to make 'segments' of color (Red & Blue) with transparency between them */}
-        <div className="absolute w-[150%] h-[150%] animate-spin-slow bg-[conic-gradient(transparent_0deg,#dc2626_80deg,transparent_100deg,transparent_180deg,#2563eb_260deg,transparent_280deg)]"></div>
-
-        {/* 2. Main Card Content (Sits on top, creating the mask) */}
-        {/* inset-1 means 4px gap roughly, let's make it tighter. changing wrapper to use padding usually works best or calc */}
-        {/* Let's try: Parent has p-[2px]. This div fills 100% height/width */}
-        <div className="absolute inset-[2px] bg-[#0a0a0a] rounded-[22px] overflow-hidden flex shadow-2xl relative z-20 backdrop-blur-sm">
-
-          {/* Left Side - Abstract Tech Illustration */}
-          <div className="hidden md:flex w-1/2 relative flex-col justify-center items-center p-12 overflow-hidden border-r border-white/5 bg-black/40">
-            <div className="relative w-64 h-64 mb-12">
-              {/* Using the CSS animations from globals.css */}
-              <div className="absolute inset-0 border-2 border-dashed border-red-500/30 rounded-full animate-spin-slow"></div>
-              <div className="absolute inset-4 border border-blue-500/40 rounded-full animate-spin-reverse-slow"></div>
-              <div className="absolute inset-[30%] bg-gradient-to-tr from-red-600 to-blue-600 rounded-full blur-xl animate-pulse-glow"></div>
-              <div className="absolute inset-[35%] bg-white rounded-full mix-blend-overlay animate-pulse"></div>
-              <div className="absolute top-0 left-10 w-2 h-2 bg-blue-400 rounded-full animate-float-random"></div>
-              <div className="absolute bottom-10 right-10 w-3 h-3 bg-red-400 rounded-full animate-float-random" style={{ animationDelay: '1s' }}></div>
-            </div>
-
-            <div className="relative z-10 w-full text-left">
-              <div className="typewriter mb-4">
-                <h2 className="text-4xl font-bold text-white mb-2">Welcome back!</h2>
-              </div>
-              <p className="text-slate-400 font-light text-lg animate-fade-in-up delay-300">Aplikasi Inventaris Alat & Laboratorium.</p>
-            </div>
+        {/* Login Card */}
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl shadow-slate-200/50 p-8 border border-white">
+          {/* Welcome Text */}
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-slate-800 mb-1">Selamat Datang!</h2>
+            <p className="text-slate-500 text-sm">Masuk untuk mengakses sistem</p>
           </div>
 
-          {/* Right Side - Form */}
-          <div className="w-full md:w-1/2 p-12 flex flex-col justify-center relative z-10 bg-[#0f0f12]/90 backdrop-blur-xl">
-            <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(circle_at_50%_0%,#ef4444,transparent_50%),radial-gradient(circle_at_0%_100%,#3b82f6,transparent_50%)] animate-aurora"></div>
+          {/* Error Message */}
+          {error && (
+            <div className="mb-6 p-4 bg-red-50/80 backdrop-blur-sm border border-red-200 rounded-2xl animate-fade-in">
+              <p className="text-sm text-red-700 font-medium text-center">{error}</p>
+            </div>
+          )}
 
-            <div className="relative z-10">
-              <div className="text-center mb-10 animate-fade-in-up">
-                <h3 className="text-3xl font-bold text-white mb-2 tracking-tight">Login Account</h3>
-                <p className="text-slate-500 text-sm">Masuk dengan akun yang telah terdaftar.</p>
+          {/* Login Form */}
+          <form onSubmit={handleLogin} className="space-y-5">
+            {/* Username */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Username</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 backdrop-blur-sm border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium"
+                  placeholder="Masukkan username"
+                  required
+                />
               </div>
+            </div>
 
-              {error && (
-                <div className="mb-6 p-3 bg-red-500/10 border-l-4 border-red-500 text-red-400 text-sm animate-fade-in-up rounded-r">
-                  {error}
+            {/* Password */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Password</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
                 </div>
-              )}
-
-              <form onSubmit={handleLogin} className="space-y-6">
-                <div className="relative group animate-fade-in-up delay-100">
-                  <input
-                    type="text"
-                    id="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    className="block px-4 pb-2.5 pt-5 w-full text-sm text-white bg-[#1a1a20] border border-white/10 rounded-xl appearance-none focus:outline-none focus:ring-0 focus:border-blue-500 peer transition-all duration-300 shadow-inner"
-                    placeholder=" "
-                    required
-                  />
-                  <label htmlFor="username" className="absolute text-sm text-slate-500 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-blue-500 pointer-events-none">Username</label>
-                </div>
-
-                <div className="relative group animate-fade-in-up delay-200">
-                  <input
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="block px-4 pb-2.5 pt-5 w-full text-sm text-white bg-[#1a1a20] border border-white/10 rounded-xl appearance-none focus:outline-none focus:ring-0 focus:border-red-500 peer transition-all duration-300 shadow-inner"
-                    placeholder=" "
-                    required
-                  />
-                  <label htmlFor="password" className="absolute text-sm text-slate-500 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-red-500 pointer-events-none">Password</label>
-                </div>
-
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-11 pr-12 py-3.5 bg-slate-50/50 backdrop-blur-sm border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium"
+                  placeholder="Masukkan password"
+                  required
+                />
                 <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-4 bg-gradient-to-r from-red-600 to-blue-600 hover:from-red-500 hover:to-blue-500 text-white font-bold rounded-xl shadow-[0_4px_20px_rgba(239,68,68,0.4)] hover:shadow-[0_6px_25px_rgba(59,130,246,0.6)] transform transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed mt-6 animate-fade-in-up delay-300 border border-white/10"
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 transition"
                 >
-                  {loading ? 'Logging in...' : 'Login Now'}
+                  {showPassword ? (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  )}
                 </button>
-              </form>
+              </div>
+            </div>
 
-              <p className="text-center text-slate-600 text-xs mt-10 animate-fade-in-up delay-300">
-                &copy; 2026 Aplikasi Inventaris.
-              </p>
+            {/* Remember & Forgot */}
+            <div className="flex items-center justify-between text-sm">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500" />
+                <span className="text-slate-600 font-medium">Ingat saya</span>
+              </label>
+              <a href="#" className="text-blue-600 font-semibold hover:text-blue-700 transition">Lupa password?</a>
+            </div>
+
+            {/* Login Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/50 hover:shadow-xl hover:shadow-blue-500/60 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed group"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Memproses...
+                </span>
+              ) : (
+                <span className="flex items-center justify-center gap-2">
+                  Masuk ke Sistem
+                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </span>
+              )}
+            </button>
+          </form>
+
+          {/* Trust Indicators */}
+          <div className="mt-8 grid grid-cols-3 gap-3">
+            <div className="text-center">
+              <div className="w-10 h-10 mx-auto mb-2 bg-blue-100 rounded-full flex items-center justify-center">
+                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <p className="text-xs font-bold text-slate-700">Aman</p>
+            </div>
+            <div className="text-center">
+              <div className="w-10 h-10 mx-auto mb-2 bg-emerald-100 rounded-full flex items-center justify-center">
+                <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <p className="text-xs font-bold text-slate-700">Cepat</p>
+            </div>
+            <div className="text-center">
+              <div className="w-10 h-10 mx-auto mb-2 bg-purple-100 rounded-full flex items-center justify-center">
+                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <p className="text-xs font-bold text-slate-700">Terpercaya</p>
             </div>
           </div>
         </div>
+
+        {/* Footer */}
+        <p className="text-center mt-6 text-sm text-slate-600">
+          © 2026 UKK Project - Sistem Inventaris Sekolah
+        </p>
       </div>
     </div>
   );

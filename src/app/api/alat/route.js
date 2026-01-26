@@ -20,6 +20,9 @@ export async function GET(request) {
         whereClause.id_kategori = parseInt(kategori);
     }
 
+    console.log('API Alat Request:', { search, kategori, page, limit });
+    console.log('Where Clause:', JSON.stringify(whereClause));
+
     try {
         const [data, total] = await prisma.$transaction([
             prisma.alat.findMany({
@@ -31,6 +34,8 @@ export async function GET(request) {
             }),
             prisma.alat.count({ where: whereClause })
         ]);
+
+        console.log(`API Alat Found: ${total} items`);
 
         return NextResponse.json({
             data,
@@ -49,14 +54,21 @@ export async function GET(request) {
 export async function POST(request) {
     try {
         const body = await request.json();
-        const { nama_alat, id_kategori, stok, kondisi } = body;
+        const { nama_alat, id_kategori, stok, kondisi, foto } = body;
+
+        // Auto-generate Kode Barang: BRG-[Random4]-[Time4]
+        // Contoh: BRG-4592-8821
+        const kode_alat = `BRG-${Math.floor(1000 + Math.random() * 9000)}-${Date.now().toString().slice(-4)}`;
 
         const alat = await prisma.alat.create({
             data: {
+                kode_alat: kode_alat,
                 nama_alat,
                 id_kategori: Number(id_kategori),
                 stok: Number(stok),
-                kondisi: kondisi || 'baik'
+                stok_rusak: 0,
+                kondisi: kondisi || 'baik',
+                foto: foto || '' // Optional
             }
         });
 
