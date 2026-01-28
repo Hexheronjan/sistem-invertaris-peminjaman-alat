@@ -84,5 +84,11 @@ Aplikasi ini menggunakan struktur database relasional dengan model-model berikut
 - **Pengembalian (`pengembalian`)**: Mencatat detail saat alat dikembalikan, termasuk denda jika ada.
 - **LogAktivitas (`log_aktivitas`)**: Mencatat riwayat aktivitas yang dilakukan oleh pengguna dalam sistem.
 
+### Setup Database Manual (Opsional)
+Jika Anda tidak menggunakan Prisma Migration atau ingin melihat skema lengkap beserta Trigger dan Function yang digunakan, Anda dapat menggunakan file SQL yang telah disediakan:
+`database_setup.sql`
+
+File tersebut berisi definisi tabel, relation, function, dan trigger yang dibutuhkan oleh aplikasi ini.
+
 ### Trigger & Procedure
-Aplikasi ini menggunakan beberapa Database Trigger untuk otomatisasi (seperti pengurangan stok otomatis). Definisi trigger dapat ditemukan di file `database_triggers_dump.txt` atau `triggers.txt` (jika ada).
+Aplikasi ini menggunakan beberapa Database Trigger untuk otomatisasi (seperti pengurangan stok otomatis). Definisi lengkap dapat ditemukan di `database_setup.sql`.
