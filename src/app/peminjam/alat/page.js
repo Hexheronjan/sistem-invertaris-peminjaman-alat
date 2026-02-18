@@ -86,7 +86,7 @@ export default function KatalogAlatPage() {
         <div className="min-h-screen bg-slate-50/50">
             <Sidebar role="peminjam" />
 
-            <main className="ml-72 p-8 transition-all duration-300">
+            <main className="md:ml-72 p-8 transition-all duration-300">
                 {/* [1] HEADER & SEARCH - Floating Glass Style */}
                 <header className="sticky top-4 z-20 mb-8 animate-fade-in-up">
                     <div className="bg-white/80 backdrop-blur-xl border border-white/50 shadow-xl shadow-slate-200/40 rounded-3xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">

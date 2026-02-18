@@ -17,7 +17,7 @@ export default function PetugasDashboard() {
         <div className="min-h-screen bg-transparent">
             <Sidebar role="petugas" />
 
-            <main className="ml-72 p-8 transition-all duration-300">
+            <main className="md:ml-72 p-8 transition-all duration-300">
                 {/* [1] JUDUL HALAMAN */}
                 <header className="mb-10 animate-fade-in-up">
                     <div className="flex items-center justify-between">

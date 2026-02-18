@@ -80,7 +80,7 @@ export default function LaporanPage() {
         <div className="min-h-screen bg-slate-50">
             <Sidebar role="petugas" />
 
-            <div className="ml-64 p-8 animate-fade-in-up">
+            <div className="md:ml-72 p-8 animate-fade-in-up">
 
                 {/* Header Page */}
                 <div className="flex justify-between items-center mb-8">
@@ -137,8 +137,8 @@ export default function LaporanPage() {
                                                 <td className="px-6 py-4">{new Date(row.tanggal_kembali).toLocaleDateString()}</td>
                                                 <td className="px-6 py-4">
                                                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${row.status === 'kembali' ? 'bg-green-50 text-green-700 border-green-200' :
-                                                            row.status === 'disetujui' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                                                                'bg-slate-50 text-slate-600 border-slate-200'
+                                                        row.status === 'disetujui' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                                                            'bg-slate-50 text-slate-600 border-slate-200'
                                                         }`}>
                                                         {row.status === 'kembali' ? 'Selesai' : row.status}
                                                     </span>

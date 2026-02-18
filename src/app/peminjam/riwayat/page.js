@@ -92,7 +92,7 @@ export default function PeminjamRiwayatPage() {
         <div className="min-h-screen bg-slate-50/50">
             <Sidebar role="peminjam" />
 
-            <main className="ml-72 p-8 transition-all duration-300">
+            <main className="md:ml-72 p-8 transition-all duration-300">
                 {/* Header */}
                 <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 animate-fade-in-up">
                     <div>
@@ -157,10 +157,10 @@ export default function PeminjamRiwayatPage() {
                                             {/* Status Badge */}
                                             <div className="flex flex-col items-end gap-2 min-w-[140px]">
                                                 <span className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wide border shadow-sm ${row.status === 'disetujui' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                                                        row.status === 'ditolak' ? 'bg-red-50 text-red-600 border-red-100' :
-                                                            row.status === 'kembali' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                                                                row.status === 'menunggu_kembali' ? 'bg-orange-50 text-orange-600 border-orange-100' :
-                                                                    'bg-amber-50 text-amber-600 border-amber-100'
+                                                    row.status === 'ditolak' ? 'bg-red-50 text-red-600 border-red-100' :
+                                                        row.status === 'kembali' ? 'bg-blue-50 text-blue-600 border-blue-100' :
+                                                            row.status === 'menunggu_kembali' ? 'bg-orange-50 text-orange-600 border-orange-100' :
+                                                                'bg-amber-50 text-amber-600 border-amber-100'
                                                     }`}>
                                                     {row.status === 'menunggu_kembali' ? 'Verifikasi' : row.status}
                                                 </span>

@@ -17,7 +17,7 @@ export default function AdminDashboard() {
         <div className="min-h-screen bg-slate-50/50">
             <Sidebar role="admin" />
 
-            <main className="ml-72 p-8 transition-all duration-300">
+            <main className="md:ml-72 p-8 transition-all duration-300">
                 {/* [1] HEADER & WELCOME BANNER */}
                 <header className="mb-10 animate-fade-in-up relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-700 p-10 shadow-xl shadow-blue-500/20 text-white">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>

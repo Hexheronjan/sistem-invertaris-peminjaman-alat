@@ -109,7 +109,7 @@ export default function PetugasPengembalianPage() {
         <div className="min-h-screen bg-slate-100">
             <Sidebar role="petugas" />
 
-            <main className="ml-64 p-8 transition-all duration-300">
+            <main className="md:ml-72 p-8 transition-all duration-300">
                 <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 animate-fade-in-up">
                     <div>
                         <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Proses Pengembalian</h1>

@@ -70,7 +70,7 @@ export default function KategoriPage() {
         <div className="min-h-screen bg-slate-50">
             <Sidebar role="admin" />
 
-            <main className="ml-72 p-8 transition-all duration-300">
+            <main className="md:ml-72 p-8 transition-all duration-300">
                 {/* Header */}
                 <div className="section-header animate-fade-in-up">
                     <div>

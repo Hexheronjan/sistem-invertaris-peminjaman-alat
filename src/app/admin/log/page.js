@@ -85,7 +85,7 @@ export default function LogPage() {
         <div className="min-h-screen bg-slate-50">
             <Sidebar role="admin" />
 
-            <main className="ml-72 p-8 transition-all duration-300">
+            <main className="md:ml-72 p-8 transition-all duration-300">
                 <div className="section-header animate-fade-in-up bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-8">
                     <div>
                         <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight">Log Aktivitas Sistem</h1>

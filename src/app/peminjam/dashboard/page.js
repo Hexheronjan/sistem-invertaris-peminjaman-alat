@@ -29,7 +29,7 @@ export default function PeminjamDashboard() {
         <div className="min-h-screen bg-slate-50/50">
             <Sidebar role="peminjam" />
 
-            <main className="ml-72 p-8 transition-all duration-300">
+            <main className="md:ml-72 p-8 transition-all duration-300">
                 {/* [1] HERO SECTION - Enhanced */}
                 <header className="mb-10 animate-fade-in-up relative rounded-3xl bg-white p-8 border border-white/50 shadow-xl shadow-slate-200/50 overflow-hidden">
                     <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-full blur-3xl -mr-20 -mt-20 opacity-60 pointer-events-none"></div>
