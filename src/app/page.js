@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -168,6 +169,11 @@ export default function LoginPage() {
               )}
             </button>
           </form>
+
+          {/* Register Link */}
+          <div className="mt-6 text-center">
+            <p className="text-slate-600">Belum punya akun? <Link href="/auth/register" className="text-blue-600 font-bold hover:underline transition">Daftar sekarang</Link></p>
+          </div>
 
           {/* Trust Indicators */}
           <div className="mt-8 grid grid-cols-3 gap-3">

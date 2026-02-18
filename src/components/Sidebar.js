@@ -1,10 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 export default function Sidebar({ role }) {
     const pathname = usePathname();
+    const [isOpen, setIsOpen] = useState(false); // Mobile state
 
     const menus = {
         admin: [
@@ -32,52 +34,80 @@ export default function Sidebar({ role }) {
     const activeMenus = menus[role] || [];
 
     return (
-        <aside className="w-72 h-screen fixed left-0 top-0 z-50 bg-white border-r border-slate-200 flex flex-col transition-all duration-300">
-            <div className="p-8 pb-4">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
-                        <span className="text-xl">⚡</span>
-                    </div>
-                    <div>
-                        <h2 className="text-xl font-bold text-slate-800 leading-tight tracking-tight">Inventaris</h2>
-                        <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">{role?.toUpperCase() || 'PENGGUNA'}</p>
+        <>
+            {/* Mobile Hamburger Button */}
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-md md:hidden text-slate-600 hover:text-blue-600 transition"
+            >
+                {isOpen ? (
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                ) : (
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+                )}
+            </button>
+
+            {/* Backdrop for Mobile */}
+            {isOpen && (
+                <div
+                    onClick={() => setIsOpen(false)}
+                    className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm transition-opacity"
+                />
+            )}
+
+            {/* Sidebar Container */}
+            <aside className={`
+                w-72 h-screen fixed left-0 top-0 z-50 bg-white border-r border-slate-200 flex flex-col transition-transform duration-300 ease-in-out
+                ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
+                md:translate-x-0
+            `}>
+                <div className="p-8 pb-4 flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
+                            <span className="text-xl">⚡</span>
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-slate-800 leading-tight tracking-tight">Inventaris</h2>
+                            <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">{role?.toUpperCase() || 'PENGGUNA'}</p>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <nav className="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto custom-scrollbar">
-                <p className="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Menu Utama</p>
-                {activeMenus.map((menu) => {
-                    const isActive = pathname === menu.href;
-                    return (
-                        <Link
-                            key={menu.href}
-                            href={menu.href}
-                            className={`flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 group relative ${isActive
-                                ? 'bg-blue-50 text-blue-700 font-semibold'
-                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                                }`}
-                        >
-                            {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-blue-600 rounded-r-full" />}
-                            <span className={`text-xl transition-transform duration-200 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}>{menu.icon}</span>
-                            <span className="text-sm">{menu.label}</span>
-                        </Link>
-                    );
-                })}
-            </nav>
+                <nav className="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto custom-scrollbar">
+                    <p className="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Menu Utama</p>
+                    {activeMenus.map((menu) => {
+                        const isActive = pathname === menu.href;
+                        return (
+                            <Link
+                                key={menu.href}
+                                href={menu.href}
+                                onClick={() => setIsOpen(false)} // Close sidebar on click (mobile)
+                                className={`flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 group relative ${isActive
+                                    ? 'bg-blue-50 text-blue-700 font-semibold'
+                                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                                    }`}
+                            >
+                                {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-blue-600 rounded-r-full" />}
+                                <span className={`text-xl transition-transform duration-200 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}>{menu.icon}</span>
+                                <span className="text-sm">{menu.label}</span>
+                            </Link>
+                        );
+                    })}
+                </nav>
 
-            <div className="p-4 border-t border-slate-100 mx-4 mb-2">
-                <button
-                    onClick={async () => {
-                        await fetch('/api/auth/logout', { method: 'POST' });
-                        window.location.href = '/';
-                    }}
-                    className="w-full flex items-center justify-center gap-2.5 px-4 py-3 bg-white border border-slate-200 text-slate-600 hover:bg-red-50 hover:text-red-600 hover:border-red-100 rounded-xl transition-all duration-200 group shadow-sm hover:shadow"
-                >
-                    <span className="group-hover:-translate-x-1 transition-transform">🚪</span>
-                    <span className="font-medium text-sm">Keluar</span>
-                </button>
-            </div>
-        </aside>
+                <div className="p-4 border-t border-slate-100 mx-4 mb-2">
+                    <button
+                        onClick={async () => {
+                            await fetch('/api/auth/logout', { method: 'POST' });
+                            window.location.href = '/';
+                        }}
+                        className="w-full flex items-center justify-center gap-2.5 px-4 py-3 bg-white border border-slate-200 text-slate-600 hover:bg-red-50 hover:text-red-600 hover:border-red-100 rounded-xl transition-all duration-200 group shadow-sm hover:shadow"
+                    >
+                        <span className="group-hover:-translate-x-1 transition-transform">🚪</span>
+                        <span className="font-medium text-sm">Keluar</span>
+                    </button>
+                </div>
+            </aside>
+        </>
     );
 }
